@@ -20,7 +20,7 @@ const AuthScreen = () => {
           alt="company Logo"
           className="w-32 md:w-52"
         />
-        <Link to={"/login"} className="text-white bg-blue-600 py-1 px-2 rounded">
+        <Link to={"/login"} className="text-white bg-blue-600 py-2 px-4 rounded-full hover:border-2 hover:border-white">
           Sign In
         </Link>
       </header>
@@ -45,11 +45,11 @@ const AuthScreen = () => {
           <input
             type="email"
             placeholder="Email address"
-            className="p-2 rounded flex-1 bg-black/80 border border-gray-700"
+            className="p-2 pl-4 flex-1 bg-black/80 border border-gray-700 rounded-full"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
           />
-          <button className="bg-blue-600 text-xl lg:text-2xl px-2 lg:px-6 py-1 md:py-2 rounded flex justify-center items-center">
+          <button className="bg-blue-600 text-xl lg:text-2xl px-2 lg:px-6 py-1 md:py-2 rounded-full flex justify-center items-center hover:bg-blue-700 hover:border-2 hover:border-white">
             Get Started
             <ChevronRight className="size-8 md:size-10" />
           </button>

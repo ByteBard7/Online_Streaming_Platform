@@ -24,22 +24,22 @@ const Navbar = () => {
         </Link>
 
         {/* desktop navbar items */}
-        <div className="hidden sm:flex gap-2 items-center">
+        <div className="hidden sm:flex gap-7 items-center">
           <Link
             to="/"
-            className="hover:underline mx-5"
+            className="hover:underline"
             onClick={() => setContentType("movie")}
           >
             Movies
           </Link>
           <Link
             to="/"
-            className="hover:underline mx-5"
+            className="hover:underline"
             onClick={() => setContentType("tv")}
           >
             Tv Shows
           </Link>
-          <Link to="/history" className="hover:underline mx-5">
+          <Link to="/history" className="hover:underline">
             Search History
           </Link>
         </div>
