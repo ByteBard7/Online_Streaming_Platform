@@ -7,10 +7,9 @@ import { useContentStore } from "../store/content";
 const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { user, logout } = useAuthStore();
+  const { setContentType } = useContentStore();
 
   const toggleMobileMenu = () => setIsMobileMenuOpen(!isMobileMenuOpen);
-
-  const { setContentType } = useContentStore();
 
   return (
     <header className="max-w-6xl mx-auto flex flex-wrap items-center justify-between p-4 h-20">
@@ -18,12 +17,12 @@ const Navbar = () => {
         <Link to="/">
           <img
             src="/company-logo.png"
-            alt="company Logo"
+            alt="Company Logo"
             className="w-32 sm:w-40"
           />
         </Link>
 
-        {/* desktop navbar items */}
+        {/* Desktop Navbar Items */}
         <div className="hidden sm:flex gap-7 items-center">
           <Link
             to="/"
@@ -37,7 +36,7 @@ const Navbar = () => {
             className="hover:underline"
             onClick={() => setContentType("tv")}
           >
-            Tv Shows
+            TV Shows
           </Link>
           <Link to="/history" className="hover:underline">
             Search History
@@ -46,40 +45,46 @@ const Navbar = () => {
       </div>
 
       <div className="flex gap-6 items-center z-50">
-        <Link to={"/search"}>
-          <Search className="size-6 cursor-pointer" />
+        <Link to="/search">
+          <Search className="size-6 cursor-pointer text-white hover:text-gray-300 transition-colors" />
         </Link>
         <img
           src={user.image}
           alt="Avatar"
-          className="h-8 rounded cursor-pointer"
+          className="h-8 rounded-full cursor-pointer"
         />
-        <LogOut className="size-6 cursor-pointer" onClick={logout} />
+        <LogOut
+          className="size-6 cursor-pointer text-white hover:text-gray-300 transition-colors"
+          onClick={logout}
+        />
         <div className="sm:hidden">
-          <Menu className="size-6 cursor-pointer" onClick={toggleMobileMenu} />
+          <Menu
+            className="size-6 cursor-pointer text-white hover:text-gray-300 transition-colors"
+            onClick={toggleMobileMenu}
+          />
         </div>
       </div>
 
-      {/* mobile navbar items */}
+      {/* Mobile Navbar Items */}
       {isMobileMenuOpen && (
         <div className="w-full sm:hidden mt-4 z-50 bg-black border rounded border-gray-800">
           <Link
-            to={"/"}
-            className="block hover:underline p-2"
+            to="/"
+            className="block hover:bg-gray-700 p-4 text-white"
             onClick={toggleMobileMenu}
           >
             Movies
           </Link>
           <Link
-            to={"/"}
-            className="block hover:underline p-2"
+            to="/"
+            className="block hover:bg-gray-700 p-4 text-white"
             onClick={toggleMobileMenu}
           >
-            Tv Shows
+            TV Shows
           </Link>
           <Link
-            to={"/history"}
-            className="block hover:underline p-2"
+            to="/history"
+            className="block hover:bg-gray-700 p-4 text-white"
             onClick={toggleMobileMenu}
           >
             Search History
@@ -89,4 +94,5 @@ const Navbar = () => {
     </header>
   );
 };
+
 export default Navbar;

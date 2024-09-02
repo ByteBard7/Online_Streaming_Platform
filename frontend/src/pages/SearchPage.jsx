@@ -10,23 +10,26 @@ import { Link } from "react-router-dom";
 const SearchPage = () => {
   const [activeTab, setActiveTab] = useState("movie");
   const [searchTerm, setSearchTerm] = useState("");
-
   const [results, setResults] = useState([]);
   const { setContentType } = useContentStore();
 
   const handleTabClick = (tab) => {
     setActiveTab(tab);
-    tab === "movie" ? setContentType("movie") : setContentType("tv");
-    setResults([]);
+    setContentType(tab);
+    setResults([]); // Clear previous results
   };
 
   const handleSearch = async (e) => {
     e.preventDefault();
+    if (!searchTerm.trim()) {
+      toast.error("Please enter a search term");
+      return;
+    }
     try {
       const res = await axios.get(`/api/v1/search/${activeTab}/${searchTerm}`);
       setResults(res.data.content);
     } catch (error) {
-      if (error.response.status === 404) {
+      if (error.response && error.response.status === 404) {
         toast.error(
           "Nothing found, make sure you are searching under the right category"
         );
@@ -41,30 +44,18 @@ const SearchPage = () => {
       <Navbar />
       <div className="container mx-auto px-4 py-8 mt-6">
         <div className="flex justify-center gap-3 mb-4">
-          <button
-            className={`py-2 px-4 rounded-full ${
-              activeTab === "movie" ? "bg-blue-600" : "bg-gray-800"
-            } hover:bg-blue-700`}
-            onClick={() => handleTabClick("movie")}
-          >
-            Movies
-          </button>
-          <button
-            className={`py-2 px-4 rounded-full ${
-              activeTab === "tv" ? "bg-blue-600" : "bg-gray-800"
-            } hover:bg-blue-700`}
-            onClick={() => handleTabClick("tv")}
-          >
-            TV Shows
-          </button>
-          <button
-            className={`py-2 px-4 rounded-full ${
-              activeTab === "person" ? "bg-blue-600" : "bg-gray-800"
-            } hover:bg-blue-700`}
-            onClick={() => handleTabClick("person")}
-          >
-            Person
-          </button>
+          {["movie", "tv", "person"].map((tab) => (
+            <button
+              key={tab}
+              className={`py-2 px-4 rounded-full ${
+                activeTab === tab ? "bg-blue-600" : "bg-gray-800"
+              } hover:bg-blue-700`}
+              onClick={() => handleTabClick(tab)}
+              aria-label={`Search in ${tab} category`}
+            >
+              {tab.charAt(0).toUpperCase() + tab.slice(1)}
+            </button>
+          ))}
         </div>
 
         <form
@@ -75,13 +66,23 @@ const SearchPage = () => {
             type="text"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            placeholder={"Search for a " + activeTab}
+            placeholder={`Search for a ${activeTab}`}
             className="w-full p-2 bg-gray-800 text-white rounded-full pl-4"
+            aria-label={`Search input for ${activeTab}`}
           />
-          <button className="bg-blue-600 hover:bg-blue-700 text-white p-2 rounded-full">
-            <Search className="size-6" />
+          <button
+            className="bg-blue-600 hover:bg-blue-700 text-white p-2 rounded-full"
+            aria-label="Search button"
+          >
+            <Search className="w-5 h-5" />
           </button>
         </form>
+
+        {results.length === 0 && searchTerm && (
+          <p className="text-center text-gray-400">
+            No results found. Try searching for something else.
+          </p>
+        )}
 
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
           {results.map((result) => {
@@ -101,10 +102,8 @@ const SearchPage = () => {
                   </div>
                 ) : (
                   <Link
-                    to={"/watch/" + result.id}
-                    onClick={() => {
-                      setContentType(activeTab);
-                    }}
+                    to={`/watch/${result.id}`}
+                    onClick={() => setContentType(activeTab)}
                   >
                     <img
                       src={ORIGINAL_IMG_BASE_URL + result.poster_path}
@@ -125,4 +124,5 @@ const SearchPage = () => {
     </div>
   );
 };
+
 export default SearchPage;

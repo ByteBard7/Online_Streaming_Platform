@@ -26,7 +26,7 @@ const HomeScreen = () => {
 
   return (
     <>
-      <div className="relative h-screen text-white ">
+      <div className="relative h-screen text-white">
         <Navbar />
 
         {/* COOL OPTIMIZATION HACK FOR IMAGES */}
@@ -48,13 +48,13 @@ const HomeScreen = () => {
           aria-hidden="true"
         />
 
-        <div className="absolute top-0 left-0 w-full h-full flex flex-col justify-center px-8 md:px-16 lg:px-32">
+        <div className="absolute top-0 left-0 w-full h-full flex flex-col items-start justify-center px-8 md:px-16 lg:px-32">
           <div
             className="bg-gradient-to-b from-black via-transparent to-transparent 
-					absolute w-full h-full top-0 left-0 -z-10"
+            absolute w-full h-full top-0 left-0 -z-10"
           />
 
-          <div className="max-w-2xl">
+          <div className="max-w-2xl text-left">
             <h1 className="mt-4 text-6xl font-extrabold text-balance">
               {trendingContent?.title || trendingContent?.name}
             </h1>
@@ -71,11 +71,11 @@ const HomeScreen = () => {
             </p>
           </div>
 
-          <div className="flex mt-8">
+          <div className="flex mt-8 text-left">
             <Link
               to={`/watch/${trendingContent?.id}`}
               className="bg-blue-600 hover:bg-blue-700 text-black font-bold py-2 px-4 rounded-3xl mr-4 flex
-							 items-center hover:border-white hover:border-2"
+                items-center hover:border-white hover:border-2"
             >
               <Play className="size-6 mr-2 fill-black" />
               Play
@@ -104,4 +104,5 @@ const HomeScreen = () => {
     </>
   );
 };
+
 export default HomeScreen;
