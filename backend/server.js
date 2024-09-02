@@ -1,28 +1,32 @@
-import express from "express"; // ecmascript module
+import express from "express"; // Import Express framework for server setup
+import authRoutes from "./routes/auth.route.js"; // Import routes for authentication
+import movieRoutes from "./routes/movie.route.js"; // Import routes for movie-related endpoints
+import tvRoutes from "./routes/tv.route.js"; // Import routes for TV show-related endpoints
+import searchRoutes from "./routes/search.route.js"; // Import routes for search functionality
 
-import authRoutes from "./routes/auth.route.js";
-import movieRoutes from "./routes/movie.route.js";
-import tvRoutes from "./routes/tv.route.js";
-import searchRoutes from "./routes/search.route.js";
+import { protectRoute } from "./middleware/protectRoute.js"; // Import middleware for route protection
 
-import { protectRoute } from "./middleware/protectRoute.js";
+import { ENV_VARS } from "./config/envVars.js"; // Import environment variables
+import { connectDB } from "./config/db.js"; // Import function to connect to the database
+import cookieParser from "cookie-parser"; // Import middleware for parsing cookies
 
-import { ENV_VARS } from "./config/envVars.js";
-import { connectDB } from "./config/db.js";
-import cookieParser from "cookie-parser";
+const app = express(); // Create an Express application instance
+const PORT = ENV_VARS.PORT; // Retrieve the port from environment variables
 
-const app = express();
-const PORT = ENV_VARS.PORT;
+// Middleware to parse JSON request bodies
+app.use(express.json());
 
-app.use(express.json()); // will allow us to parse req.body object
+// Middleware to parse cookies from request headers
 app.use(cookieParser());
 
-app.use("/api/v1/auth", authRoutes);
-app.use("/api/v1/movie", protectRoute, movieRoutes);
-app.use("/api/v1/tv", protectRoute, tvRoutes);
-app.use("/api/v1/Search", protectRoute, searchRoutes);
+// Define routes for different API endpoints
+app.use("/api/v1/auth", authRoutes); // Authentication routes
+app.use("/api/v1/movie", protectRoute, movieRoutes); // Movie routes with route protection
+app.use("/api/v1/tv", protectRoute, tvRoutes); // TV show routes with route protection
+app.use("/api/v1/search", protectRoute, searchRoutes); // Search routes with route protection
 
+// Start the server and connect to the database
 app.listen(PORT, () => {
-  console.log("Server started at http://localhost:" + PORT);
-  connectDB();
+  console.log("Server started at http://localhost:" + PORT); // Log server start message
+  connectDB(); // Connect to the database
 });

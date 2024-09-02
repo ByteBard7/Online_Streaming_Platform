@@ -1,73 +1,79 @@
 import { fetchFromTMDB } from "../services/tmdb.services.js";
 
-export async function getTrendingMovie(req, res) {
-  try {
-    const data = await fetchFromTMDB(
-      "https://api.themoviedb.org/3/trending/movie/day?language=en-US"
-    );
-    const randomMovie =
-      data.results[Math.floor(Math.random() * data.results?.length)];
+// Helper function to build TMDB URLs
+const buildTMDBUrl = (endpoint) =>
+  `https://api.themoviedb.org/3${endpoint}?language=en-US`;
 
-    res.json({ success: true, content: randomMovie });
+// Helper function to handle TMDB API requests
+const handleTMDBRequest = async (url) => {
+  try {
+    const data = await fetchFromTMDB(url);
+    return { success: true, data };
   } catch (error) {
-    res.status(500).json({ success: false, message: "Internal Server Error" });
+    if (error.message.includes("404")) {
+      return { success: false, status: 404, data: null };
+    }
+    return { success: false, status: 500, message: "Internal Server Error" };
   }
+};
+
+export async function getTrendingMovie(req, res) {
+  const url = buildTMDBUrl("/trending/movie/day");
+  const { success, data, status, message } = await handleTMDBRequest(url);
+
+  if (success) {
+    const randomMovie =
+      data.results[Math.floor(Math.random() * data.results.length)];
+    return res.json({ success: true, content: randomMovie });
+  }
+
+  res.status(status).json({ success, message });
 }
 
 export async function getMovieTrailers(req, res) {
   const { id } = req.params;
-  try {
-    const data = await fetchFromTMDB(
-      `https://api.themoviedb.org/3/movie/${id}/videos?language=en-US`
-    );
-    res.json({ success: true, trailers: data.results });
-  } catch (error) {
-    if (error.message.includes("404")) {
-      return res.status(404).send(null);
-    }
+  const url = buildTMDBUrl(`/movie/${id}/videos`);
+  const { success, data, status, message } = await handleTMDBRequest(url);
 
-    res.status(500).json({ success: false, message: "Internal Server Error" });
+  if (success) {
+    return res.json({ success: true, trailers: data.results });
   }
+
+  res.status(status).send(null);
 }
 
 export async function getMovieDetails(req, res) {
   const { id } = req.params;
-  try {
-    const data = await fetchFromTMDB(
-      `https://api.themoviedb.org/3/movie/${id}?language=en-US`
-    );
+  const url = buildTMDBUrl(`/movie/${id}`);
+  const { success, data, status, message } = await handleTMDBRequest(url);
 
-    res.status(200).json({ success: true, content: data });
-  } catch (error) {
-    if (error.message.includes("404")) {
-      return res.status(404).send(null);
-    }
-
-    res.status(500).json({ success: false, message: "Internal Server Error" });
+  if (success) {
+    return res.status(200).json({ success: true, content: data });
   }
+
+  res.status(status).send(null);
 }
 
 export async function getSimilarMovies(req, res) {
   const { id } = req.params;
-  try {
-    const data = await fetchFromTMDB(
-      `https://api.themoviedb.org/3/movie/${id}/similar?language=en-US&page=1`
-    );
+  const url = buildTMDBUrl(`/movie/${id}/similar?page=1`);
+  const { success, data, status, message } = await handleTMDBRequest(url);
 
-    res.status(200).json({ success: true, similar: data.results });
-  } catch (error) {
-    res.status(500).json({ success: false, message: "Internal Server Error" });
+  if (success) {
+    return res.status(200).json({ success: true, similar: data.results });
   }
+
+  res.status(status).json({ success, message });
 }
 
 export async function getMoviesByCategory(req, res) {
   const { category } = req.params;
-  try {
-    const data = await fetchFromTMDB(
-      `https://api.themoviedb.org/3/movie/${category}?language=en-US&page=1`
-    );
-    res.status(200).json({ success: true, content: data.results });
-  } catch (error) {
-    res.status(500).json({ success: false, message: "Internal Server Error" });
+  const url = buildTMDBUrl(`/movie/${category}`);
+  const { success, data, status, message } = await handleTMDBRequest(url);
+
+  if (success) {
+    return res.status(200).json({ success: true, content: data.results });
   }
+
+  res.status(status).json({ success, message });
 }

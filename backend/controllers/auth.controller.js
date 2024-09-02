@@ -2,65 +2,86 @@ import { User } from "../models/user.model.js";
 import bcryptjs from "bcryptjs";
 import { generateTokenAndSetCookie } from "../utils/generateTokens.js";
 
+// Helper function to send error responses
+const sendErrorResponse = (res, status, message) => {
+  return res.status(status).json({ success: false, message });
+};
+
+// Helper function to validate user input
+const validateUserInput = ({ email, password, username }) => {
+  if (!email || !password || !username) {
+    return "All fields are required";
+  }
+
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(email)) {
+    return "Invalid email";
+  }
+
+  if (password.length < 6) {
+    return "Password must be at least 6 characters";
+  }
+
+  return null;
+};
+
+// Helper function to check if user exists
+const checkIfUserExists = async (email, username) => {
+  const existingUserByEmail = await User.findOne({ email });
+  if (existingUserByEmail) {
+    return "Email already exists";
+  }
+
+  const existingUserByUsername = await User.findOne({ username });
+  if (existingUserByUsername) {
+    return "Username already exists";
+  }
+
+  return null;
+};
+
+// Helper function to handle user signup
+const handleUserSignup = async (email, password, username) => {
+  const salt = await bcryptjs.genSalt(10);
+  const hashedPassword = await bcryptjs.hash(password, salt);
+
+  const PROFILE_PICS = ["/avatar1.png", "/avatar2.png", "/avatar3.png"];
+  const image = PROFILE_PICS[Math.floor(Math.random() * PROFILE_PICS.length)];
+
+  const newUser = new User({
+    email,
+    password: hashedPassword,
+    username,
+    image,
+  });
+
+  await newUser.save();
+  return newUser;
+};
+
 export async function signup(req, res) {
   try {
     const { email, password, username } = req.body;
-    if (!email || !password || !username) {
-      return res
-        .status(400)
-        .json({ success: false, message: "All fields are required" });
+
+    // Validate user input
+    const validationError = validateUserInput({ email, password, username });
+    if (validationError) {
+      return sendErrorResponse(res, 400, validationError);
     }
 
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      return res.status(400).json({ success: false, message: "Invalid email" });
+    // Check if user already exists
+    const userExistError = await checkIfUserExists(email, username);
+    if (userExistError) {
+      return sendErrorResponse(res, 400, userExistError);
     }
 
-    if (password.length < 6) {
-      return res.status(400).json({
-        success: false,
-        message: "Password must be at least 6 characters",
-      });
-    }
+    // Handle user signup
+    const newUser = await handleUserSignup(email, password, username);
 
-    const existingUserByEmail = await User.findOne({ email: email });
-
-    if (existingUserByEmail) {
-      return res
-        .status(400)
-        .json({ success: false, message: "Email already exists" });
-    }
-
-    const existingUserByUsername = await User.findOne({ username: username });
-
-    if (existingUserByUsername) {
-      return res
-        .status(400)
-        .json({ success: false, message: "Username already exists" });
-    }
-
-    const salt = await bcryptjs.genSalt(10); // generates a salt to hash a password
-    const hashedPassword = await bcryptjs.hash(password, salt);
-
-    const PROFILE_PICS = ["/avatar1.png", "/avatar2.png", "/avatar3.png"];
-
-    const image = PROFILE_PICS[Math.floor(Math.random() * PROFILE_PICS.length)];
-
-    const newUser = new User({
-      email,
-      password: hashedPassword,
-      username,
-      image,
-    });
-
-    // postman test
-
+    // Generate token and set cookie
     generateTokenAndSetCookie(newUser._id, res);
-    // once the token is generated we will save the user in the database
-    // saving user to database
-    await newUser.save();
 
-    // remove password from response
+    // Remove password from response
     res.status(201).json({
       success: true,
       user: {
@@ -77,29 +98,25 @@ export async function signup(req, res) {
 export async function login(req, res) {
   try {
     const { email, password } = req.body;
+
     if (!email || !password) {
-      return res
-        .status(400)
-        .json({ success: false, message: "All fields are required" });
+      return sendErrorResponse(res, 400, "All fields are required");
     }
 
-    const user = await User.findOne({ email: email });
+    const user = await User.findOne({ email });
     if (!user) {
-      return res
-        .status(404)
-        .json({ success: false, message: "Invalid credentials" });
+      return sendErrorResponse(res, 404, "Invalid credentials");
     }
 
     const isPasswordCorrect = await bcryptjs.compare(password, user.password);
-
     if (!isPasswordCorrect) {
-      return res
-        .status(404)
-        .json({ success: false, message: "Invalid credentials" });
+      return sendErrorResponse(res, 404, "Invalid credentials");
     }
 
-    // if password is correct we will generate a token
+    // Generate token and set cookie
     generateTokenAndSetCookie(user._id, res);
+
+    // Remove password from response
     res.status(200).json({
       success: true,
       user: {
