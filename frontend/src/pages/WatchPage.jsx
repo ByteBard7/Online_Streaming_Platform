@@ -87,7 +87,7 @@ const WatchPage = () => {
       <div className="container mx-auto px-4 py-8 h-full">
         <Navbar />
 
-        {trailers.length > 0 && (
+        {trailers?.length  > 0 && (
           <div className="flex justify-between items-center my-12">
             <button
               className={`bg-gray-500/70 hover:bg-gray-500 text-white py-2 px-4 rounded ${
