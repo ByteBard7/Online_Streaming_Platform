@@ -115,7 +115,7 @@ const WatchPage = () => {
         )}
 
         <div className="aspect-video mb-8 p-2 sm:px-10 md:px-32">
-          {trailers.length > 0 ? (
+          {trailers?.length > 0 ? (
             <ReactPlayer
               controls={true}
               width="100%"
@@ -177,7 +177,7 @@ const WatchPage = () => {
           />
         </div>
 
-        {similarContent.length > 0 && (
+        {similarContent?.length > 0 && (
           <div className="mt-12 max-w-5xl mx-auto relative">
             <h3 className="text-3xl font-bold mb-4">Similar Movies/TV Shows</h3>
             <div
