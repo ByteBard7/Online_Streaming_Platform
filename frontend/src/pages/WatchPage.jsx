@@ -83,12 +83,54 @@ const WatchPage = () => {
   }
 
   return (
-    <div className="bg-black min-h-screen text-white" >
+    <div className="bg-black min-h-screen text-white">
       <div className="container mx-auto px-4 py-8 h-full">
         <Navbar />
+        <div className="flex mt-20 flex-col md:flex-row items-center justify-between gap-20 max-w-6xl mx-auto">
+          <div className="mb-4 md:mb-0">
+            <h2 className="text-5xl font-bold">
+              {content?.title || content?.name}
+            </h2>
+            <p className="mt-2 text-lg">
+              {formatReleaseDate(
+                content?.release_date || content?.first_air_date
+              )}{" "}
+              |{" "}
+              {content?.adult ? (
+                <span className="text-red-600">18+</span>
+              ) : (
+                <span className="text-green-600">PG-13</span>
+              )}
+            </p>
+            <p className="mt-4 text-lg">{content?.overview}</p>
+            {content.number_of_episodes && (
+              <p>Total Episodes: {content.number_of_episodes}</p>
+            )}
+            <h4 className="font-bold text-blue-500 pt-3 mb-5">
+              Ratings ⭐: {content.vote_average.toFixed(2)}
+            </h4>
+            {content.genres && (
+              <div className="flex flex-wrap">
+                {content.genres.map((genre) => (
+                  <span
+                    className="bg-blue-600 py-2 px-4 my-5 mr-5 rounded-full"
+                    key={genre.id}
+                  >
+                    {genre.name}
+                  </span>
+                ))}
+              </div>
+            )}
+          </div>
+          <img
+            src={ORIGINAL_IMG_BASE_URL + content?.poster_path}
+            alt="Poster image"
+            className="max-h-[600px] rounded-md"
+          />
+        </div>
 
-        {trailers?.length  > 0 && (
-          <div className="flex justify-between items-center my-12">
+        {trailers?.length > 0 && (
+          <div className="flex justify-between items-center my-4">
             <button
               className={`bg-gray-500/70 hover:bg-gray-500 text-white py-2 px-4 rounded ${
                 currentTrailerIdx === 0 ? "opacity-50 cursor-not-allowed" : ""
@@ -132,49 +174,6 @@ const WatchPage = () => {
               😥
             </h2>
           )}
-        </div>
-
-        <div className="flex flex-col md:flex-row items-center justify-between gap-20 max-w-6xl mx-auto">
-          <div className="mb-4 md:mb-0">
-            <h2 className="text-5xl font-bold">
-              {content?.title || content?.name}
-            </h2>
-            <p className="mt-2 text-lg">
-              {formatReleaseDate(
-                content?.release_date || content?.first_air_date
-              )}{" "}
-              |{" "}
-              {content?.adult ? (
-                <span className="text-red-600">18+</span>
-              ) : (
-                <span className="text-green-600">PG-13</span>
-              )}
-            </p>
-            <p className="mt-4 text-lg">{content?.overview}</p>
-            {content.number_of_episodes && (
-              <p>Total Episodes: {content.number_of_episodes}</p>
-            )}
-            <h4 className="font-bold text-blue-500 pt-3 mb-5">
-              Ratings ⭐: {content.vote_average.toFixed(2)}
-            </h4>
-            {content.genres && (
-              <div className="flex flex-wrap">
-                {content.genres.map((genre) => (
-                  <span
-                    className="bg-blue-600 py-2 px-4 my-5 mr-5 rounded-full"
-                    key={genre.id}
-                  >
-                    {genre.name}
-                  </span>
-                ))}
-              </div>
-            )}
-          </div>
-          <img
-            src={ORIGINAL_IMG_BASE_URL + content?.poster_path}
-            alt="Poster image"
-            className="max-h-[600px] rounded-md"
-          />
         </div>
 
         {similarContent?.length > 0 && (

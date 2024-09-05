@@ -109,7 +109,7 @@ const SearchHistoryPage = () => {
               <img
                 src={`${SMALL_IMG_BASE_URL}${entry.image}`}
                 alt={`${entry.title} Thumbnail`}
-                className="w-16 h-16 rounded-full object-cover mr-4"
+                className="w-32 h-32 object-contain mr-4"
               />
               <div className="flex flex-col flex-1">
                 <span className="text-white text-lg font-semibold">
@@ -122,16 +122,16 @@ const SearchHistoryPage = () => {
               <span
                 className={`py-1 px-3 text-center rounded-full text-sm ml-auto ${
                   entry.searchType === "movie"
-                    ? "bg-blue-600"
+                    ? "bg-red-600"
                     : entry.searchType === "tv"
-                    ? "bg-green-600"
-                    : "bg-purple-600"
+                    ? "bg-orange-600"
+                    : "bg-yellow-600"
                 }`}
               >
                 {entry.searchType[0].toUpperCase() + entry.searchType.slice(1)}
               </span>
               <Trash
-                className="w-5 h-5 ml-4 cursor-pointer hover:text-blue-500"
+                className="w-5 h-5 ml-4 cursor-pointer fill-red-700 hover:text-blue-500"
                 onClick={() => handleDelete(entry)}
                 role="button"
                 aria-label="Delete search history item"
