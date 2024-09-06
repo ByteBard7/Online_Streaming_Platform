@@ -104,7 +104,7 @@ const SearchHistoryPage = () => {
           {searchHistory.map((entry) => (
             <div
               key={entry.id}
-              className="bg-gray-800 p-4 rounded-lg flex items-start hover:border-2 hover:border-blue-700 transition duration-300"
+              className="bg-blue-700 p-4 rounded-lg flex items-start hover:border-2 hover:border-blue-700 transition duration-300"
             >
               <img
                 src={`${SMALL_IMG_BASE_URL}${entry.image}`}
