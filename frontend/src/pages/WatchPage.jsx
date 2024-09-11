@@ -203,12 +203,12 @@ const WatchPage = () => {
                   )
               )}
               <ChevronRight
-                className="absolute top-1/2 -translate-y-1/2 right-2 w-8 h-8 opacity-0 group-hover:opacity-100 transition-all duration-300 cursor-pointer bg-red-600 text-white rounded-full"
+                className="absolute top-1/2 -translate-y-1/2 right-2 w-8 h-8 opacity-0 group-hover:opacity-100 transition-all duration-300 cursor-pointer bg-blue-600 text-white rounded-full"
                 onClick={scrollRight}
                 aria-label="Scroll right"
               />
               <ChevronLeft
-                className="absolute top-1/2 -translate-y-1/2 left-2 w-8 h-8 opacity-0 group-hover:opacity-100 transition-all duration-300 cursor-pointer bg-red-600 text-white rounded-full"
+                className="absolute top-1/2 -translate-y-1/2 left-2 w-8 h-8 opacity-0 group-hover:opacity-100 transition-all duration-300 cursor-pointer bg-blue-600 text-white rounded-full"
                 onClick={scrollLeft}
                 aria-label="Scroll left"
               />
